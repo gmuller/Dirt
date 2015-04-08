@@ -191,3 +191,12 @@ extern t_sample *file_get(char *samplename) {
 extern t_sample *file_get_from_cache(char *samplename) {
   return find_sample(samplename);
 }
+
+void file_cache_clear() {
+  pthread_mutex_lock(&mutex_samples);
+  for (int i = 0; i < sample_count; i++) {
+    samples[i] = NULL;
+  }
+  sample_count = 0;
+  pthread_mutex_unlock(&mutex_samples);
+}

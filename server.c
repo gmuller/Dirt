@@ -80,6 +80,13 @@ int pause_input_handler(const char *path, const char *types, lo_arg **argv,
 }
 #endif
 
+int cache_handler(const char *path, const char *types, lo_arg **argv,
+		  int argc, void *data, void *user_data) {
+  printf("cache invalidation\n");
+  file_cache_clear();
+  return(0);
+}
+
 /**/
 
 int play_handler(const char *path, const char *types, lo_arg **argv,
@@ -217,7 +224,10 @@ void *zmqthread(void *data){
 		       kriole_handler, 
 		       NULL
 		       );
-
+ lo_server_thread_add_method(s, "/cache/clear/all", "",
+                              cache_handler, 
+                              NULL
+                             );
   lo_server_add_method(s, NULL, NULL, generic_handler, NULL);
 
   assert(rc == 0);
@@ -263,7 +273,10 @@ extern int server_init(void) {
                               play_handler, 
                               NULL
                              );
-  
+   lo_server_thread_add_method(st, "/cache/clear/all", "",
+                              cache_handler, 
+                              NULL
+                             );
   // last two optional, for backward compatibility
   lo_server_thread_add_method(st, "/play", "iisffffffsffffi",
                               play_handler, 

@@ -1422,3 +1422,4 @@ static void reset_sound(t_sound* s) {
   s->bpf = old_bpf;
   s->formant_history = old_formant_history;
 }
+
